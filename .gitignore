@@ -13,3 +13,7 @@ node_modules/
 
 # Папка с собранными файлами проекта
 build/
+public/images
+public/css
+public/js
+public/index.html
