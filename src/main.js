@@ -1,12 +1,12 @@
 import {createProfileTemp} from "./components/profile";
 import {createHeadTemp} from "./components/head";
 import {createFilmsListTemp} from "./components/filmsList";
-import {createFilmCardTemp} from "./components/card";
+// import {createFilmCardTemp} from "./components/card";
 import {createShowMoreTemp} from "./components/showMore";
 import {createTopRatedTemp} from "./components/topRated";
 import {mostCommentedTemp} from "./components/mostCommented";
 
-import {filmsArr} from "./mocks/card";
+import {films} from "./components/card";
 
 const render = (container, elem, place = `beforeend`) => {
   container.insertAdjacentHTML(place, elem);
@@ -25,10 +25,7 @@ render(filmsElem, createFilmsListTemp());
 const filmsListElem = document.querySelector(`.films-list`);
 const filmsContainerElem = document.querySelector(`.films-list__container`);
 
-const CARD_COUNT = 3;
-
-console.log(filmsArr);
-render(filmsContainerElem, createFilmCardTemp(filmsArr));
+render(filmsContainerElem, films);
 
 render(filmsListElem, createShowMoreTemp());
 
