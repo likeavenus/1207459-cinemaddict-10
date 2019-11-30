@@ -15,5 +15,6 @@ node_modules/
 build/
 public/images
 public/css
-public/js
+public/js/bundle.js
 public/index.html
+
