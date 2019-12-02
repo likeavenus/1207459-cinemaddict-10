@@ -1,3 +1,5 @@
+import {createFilmCardTemp} from '../components/card';
+
 const MOCK = {
   films: [
     `Интерстеллар`,
@@ -43,11 +45,11 @@ const MOCK = {
     `horror`
   ],
   years: [
-    `1994`,
-    `2001`,
-    `2012`,
-    `1998`,
-    `2010`
+    getRandomInt(1990, 2010),
+    getRandomInt(1990, 2010),
+    getRandomInt(1990, 2010),
+    getRandomInt(1990, 2010),
+    getRandomInt(1990, 2010)
   ],
   ratings: [
     `8.9`,
@@ -58,6 +60,12 @@ const MOCK = {
     `7.9`
   ]
 };
+
+function getRandomInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min)) + min;
+}
 
 const getRandomParam = (array) => {
   return Math.floor(Math.random() * array.length);
@@ -84,6 +92,16 @@ export const generateFilmCard = () => {
     year: years[getRandomParam(years)],
   };
 };
+
+
+const FILMS_COUNT = 22;
+const generatefilms = () => {
+  return new Array(FILMS_COUNT)
+    .fill(``)
+    .map(() => createFilmCardTemp(generateFilmCard()));
+};
+
+export const films = generatefilms();
 
 // export const filmsArr = [
 //   {

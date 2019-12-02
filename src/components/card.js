@@ -1,6 +1,4 @@
-import {generateFilmCard} from "../mocks/card";
-
-const createFilmCardTemp = (film) => {
+export const createFilmCardTemp = (film) => {
   const {filmName, rating, year, duration, genre, poster, description} = film;
   return (
     `<article class="film-card">
@@ -23,11 +21,3 @@ const createFilmCardTemp = (film) => {
   );
 };
 
-const FILMS_COUNT = 22;
-const generatefilms = () => {
-  return new Array(FILMS_COUNT)
-    .fill(``)
-    .map(() => createFilmCardTemp(generateFilmCard()));
-};
-
-export const films = generatefilms();

@@ -1,12 +1,11 @@
 import {createProfileTemp} from "./components/profile";
 import {createHeadTemp} from "./components/head";
 import {createFilmsListTemp} from "./components/filmsList";
-// import {createFilmCardTemp} from "./components/card";
 import {createShowMoreTemp} from "./components/showMore";
 import {createTopRatedTemp} from "./components/topRated";
 import {mostCommentedTemp} from "./components/mostCommented";
 
-import {films} from "./components/card";
+import {films} from "./mocks/card";
 
 const render = (container, elem, place = `beforeend`) => {
   container.insertAdjacentHTML(place, elem);
