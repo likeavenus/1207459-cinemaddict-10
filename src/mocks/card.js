@@ -79,67 +79,16 @@ export const generateFilmCard = () => {
 };
 
 
-const FILMS_COUNT = 5;
+const FILMS_COUNT = 20;
 export const filmsArray = new Array(FILMS_COUNT).fill(``).map(() => generateFilmCard());
 const generatefilms = () => {
-  return filmsArray.map((item) => createFilmCardTemp(item));
+  return filmsArray.map((item) => createFilmCardTemp(item)).join(`\n`);
 };
 
 export const films = generatefilms();
 
-// export const filmsArr = [
-//   {
-//     film: `Интерстеллар`,
-//     poster: `../images/posters/made-for-each-other.png`,
-//     description: `Когда засуха, пыльные бури и вымирание растений приводят человечество к продовольственному кризису, коллектив исследователей и учёных отправляется сквозь червоточину (которая предположительно соединяет области пространства-времени через большое расстояние) в путешествие, чтобы превзойти прежние ограничения для космических путешествий человека и найти планету с подходящими для человечества условиями.`,
-//     year: `2014`,
-//     duration: `3h`,
-//     genre: `drama`,
-//     rating: `9.8`
-//   },
-//   {
-//     film: `Начало`,
-//     poster: `../images/posters/popeye-meets-sinbad.png`,
-//     description: `Кобб — талантливый вор, лучший из лучших в опасном искусстве извлечения: он крадет ценные секреты из глубин подсознания во время сна, когда человеческий разум наиболее уязвим. Редкие способности Кобба сделали его ценным игроком в привычном к предательству мире промышленного шпионажа, но они же превратили его в извечного беглеца и лишили всего, что он когда-либо любил.`,
-//     year: `2010`,
-//     duration: `2h 28min`,
-//     genre: `drama`,
-//     rating: `9.9`
-//   },
-//   {
-//     film: `Star track`,
-//     poster: `../images/posters/sagebrush-trail.jpg`,
-//     description: `Когда Нерон с планеты Ромул приходит из будущего, чтобы отомстить Федерации, конкуренты Кирк и Спок должны объединиться, чтобы не дать ему разрушить все, что им дорого. Во время этого будоражащего путешествия, наполненного эффектными боями, юмором и космическими угрозами, новоиспеченные члены команды военного корабля «Энтерпрайз» смело встретятся лицом к лицу с невообразимыми опасностями.`,
-//     year: `2010`,
-//     duration: `2h`,
-//     genre: `drama`,
-//     rating: `8.0`
-//   },
-//   {
-//     film: `Горбатая гора`,
-//     poster: `../images/posters/santa-claus-conquers-the-martians.jpg`,
-//     description: `На фоне живописных просторов штата Вайоминг разворачивается история сложных взаимоотношений двух молодых людей — помощника владельца ранчо и ковбоя родео. Герои случайно встречаются и скоро понимают, что не могут жить друг без друга. Однако судьба упрямо испытывает их на прочность.`,
-//     year: `2010`,
-//     duration: `2h 28min`,
-//     genre: `drama`,
-//     rating: `9.9`
-//   },
-//   {
-//     film: `Криминальное чтиво`,
-//     poster: `../images/posters/santa-claus-conquers-the-martians.jpg`,
-//     description: `Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante.`,
-//     year: `1994`,
-//     duration: `2h 30min`,
-//     genre: `action`,
-//     rating: `10.0`
-//   },
-//   {
-//     film: `Лунная афера`,
-//     poster: `../images/posters/the-dance-of-life.jpg`,
-//     description: `Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante.`,
-//     year: `2010`,
-//     duration: `2h 28min`,
-//     genre: `drama`,
-//     rating: `9.9`
-//   }
-// ];
+export const topRatedArr = () => {
+  return filmsArray.filter((film, index) => index < 2 ? parseFloat(film.rating) > 7.5 : null);
+};
+
+export const topRatedFilms = topRatedArr().map((item)=> createFilmCardTemp(item)).join(`\n`);
