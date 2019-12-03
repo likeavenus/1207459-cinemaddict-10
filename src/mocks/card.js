@@ -31,40 +31,22 @@ const MOCK = {
     `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
     `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`
   ],
-  durations: [
-    `3h`,
-    `2h 30min`,
-    `1h 50min`,
-    `3h 10min`,
-    `2h 22min`
-  ],
   genre: [
     `drama`,
     `comedy`,
     `action`,
     `horror`
-  ],
-  years: [
-    getRandomInt(1990, 2010),
-    getRandomInt(1990, 2010),
-    getRandomInt(1990, 2010),
-    getRandomInt(1990, 2010),
-    getRandomInt(1990, 2010)
-  ],
-  ratings: [
-    `8.9`,
-    `9.0`,
-    `10.0`,
-    `8.8`,
-    `9.7`,
-    `7.9`
   ]
 };
 
-function getRandomInt(min, max) {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min)) + min;
+export function getRandomInt(min, max, rounding = false) {
+  if (rounding) {
+    return (Math.random() * (max - min) + min).toFixed(1);
+  } else {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min)) + min;
+  }
 }
 
 const getRandomParam = (array) => {
@@ -76,29 +58,31 @@ export const generateFilmCard = () => {
     films,
     posters,
     descriptions,
-    durations,
-    genre,
-    years,
-    ratings
+    genre
   } = MOCK;
+
+  const duration = `${getRandomInt(1, 3)}h ${getRandomInt(10, 55)}min`;
+  const rating = getRandomInt(5.0, 10.0, true);
 
   return {
     filmName: films[getRandomParam(films)],
-    rating: ratings[getRandomParam(ratings)],
+    rating,
     poster: posters[getRandomParam(posters)],
     description: descriptions[getRandomParam(descriptions)],
-    duration: durations[getRandomParam(durations)],
+    duration,
     genre: genre[getRandomParam(genre)],
-    year: years[getRandomParam(years)],
+    year: getRandomInt(1990, 2010),
+    isFavorite: Math.random() >= 0.5,
+    isWatching: Math.random() >= 0.5,
+    isHistory: Math.random() >= 0.5
   };
 };
 
 
-const FILMS_COUNT = 22;
+const FILMS_COUNT = 5;
+export const filmsArray = new Array(FILMS_COUNT).fill(``).map(() => generateFilmCard());
 const generatefilms = () => {
-  return new Array(FILMS_COUNT)
-    .fill(``)
-    .map(() => createFilmCardTemp(generateFilmCard()));
+  return filmsArray.map((item) => createFilmCardTemp(item));
 };
 
 export const films = generatefilms();

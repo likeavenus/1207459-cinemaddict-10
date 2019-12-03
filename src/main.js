@@ -6,6 +6,9 @@ import {createTopRatedTemp} from "./components/topRated";
 import {mostCommentedTemp} from "./components/mostCommented";
 
 import {films} from "./mocks/card";
+import {popupData} from "./mocks/popup";
+console.log(popupData());
+
 
 const render = (container, elem, place = `beforeend`) => {
   container.insertAdjacentHTML(place, elem);
