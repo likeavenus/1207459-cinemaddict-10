@@ -67,9 +67,14 @@ console.log(topRatedArr());
 if (!topRatedArr().length) {
   topRatedFilmsListElem.style.display = `none`;
 } else {
-  render(topRatedFilmsContainerElem, topRatedFilms);
+  let ratingStatus = 0;
+  topRatedArr().map((item)=> {
+    ratingStatus += item.rating;
+  });
+  if (ratingStatus) {
+    render(topRatedFilmsContainerElem, topRatedFilms);
+  }
 }
-
 
 // new Array(TOP_RATED)
 //   .fill(``)
