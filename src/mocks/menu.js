@@ -13,13 +13,9 @@ export const filmsFilter = (arr, option) => {
 };
 
 export const getFilterData = (arr) => {
-  const filterData = {
-    watchlist: 0,
-    favorites: 0,
-    history: 0
+  return {
+    watchlist: filmsFilter(arr, `isWatching`),
+    favorites: filmsFilter(arr, `isFavorite`),
+    history: filmsFilter(arr, `isHistory`)
   };
-  filterData.watchlist = filmsFilter(arr, `isWatching`);
-  filterData.favorites = filmsFilter(arr, `isFavorite`);
-  filterData.history = filmsFilter(arr, `isHistory`);
-  return filterData;
 };

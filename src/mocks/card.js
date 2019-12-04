@@ -53,6 +53,36 @@ const getRandomParam = (array) => {
   return Math.floor(Math.random() * array.length);
 };
 
+const commentsMock = {
+  emoji: [
+    `./images/emoji/angry.png`,
+    `./images/emoji/puke.png`,
+    `./images/emoji/sleeping.png`,
+    `./images/emoji/smile.png`,
+    `./images/emoji/trophy.png`,
+  ],
+  commentsText: [
+    `Interesting setting and a good cast`,
+    `Booooooooooring`,
+    `Very very old. Meh`,
+    `Almost two hours? Seriously?`
+  ],
+  usernames: [
+    `Tim Macoveev`,
+    `John Doe`,
+  ]
+};
+
+const generateComments = () => {
+  const {emoji, commentsText, usernames} = commentsMock;
+  return {
+    emoji: emoji[getRandomParam(emoji)],
+    commentsText: commentsText[getRandomParam(commentsText)],
+    username: usernames[getRandomParam(usernames)],
+    time: `2 days ago`
+  };
+};
+
 export const generateFilmCard = () => {
   const {
     films,
@@ -66,29 +96,34 @@ export const generateFilmCard = () => {
 
   return {
     filmName: films[getRandomParam(films)],
+    originalName: films[getRandomParam(films)],
     rating,
     poster: posters[getRandomParam(posters)],
     description: descriptions[getRandomParam(descriptions)],
+    fullDescription: `The film opens following a murder at a cabaret in Mexico City in 1936, and then presents the events leading up to it in...`,
     duration,
-    genre: genre[getRandomParam(genre)],
     year: getRandomInt(1990, 2010),
     isFavorite: Math.random() >= 0.5,
     isWatching: Math.random() >= 0.5,
-    isHistory: Math.random() >= 0.5
+    isHistory: Math.random() >= 0.5,
+    comments: new Array(getRandomInt(0, 5)).fill(``).map((comment) => generateComments(comment)),
+    ageRating: `16+`,
+    director: `C. Nolan`,
+    writers: `Anne Wigton, Heinz Herald`,
+    actors: `Vasiliy, Alex, Tolik`,
+    releaseDate: `${getRandomInt(1, 30)} March ${getRandomInt(1900, 2010)}`,
+    country: `USA`,
+    genres: [genre[getRandomParam(genre)]],
   };
 };
 
-
-const FILMS_COUNT = 20;
+const FILMS_COUNT = 22;
 export const filmsArray = new Array(FILMS_COUNT).fill(``).map(() => generateFilmCard());
-const generatefilms = () => {
-  return filmsArray.map((item) => createFilmCardTemp(item)).join(`\n`);
-};
 
-export const films = generatefilms();
-
-export const topRatedArr = () => {
+export const getTopRatedArr = () => {
   return filmsArray.filter((film, index) => index < 2 ? parseFloat(film.rating) > 7.5 : null);
 };
 
-export const topRatedFilms = topRatedArr().map((item)=> createFilmCardTemp(item)).join(`\n`);
+export const getMostCommentedArr = () => {
+  return filmsArray.filter((film) => film.comments.length > 4 ? film : null);
+};
