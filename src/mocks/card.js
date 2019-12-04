@@ -1,5 +1,3 @@
-import {createFilmCardTemp} from '../components/card';
-
 const MOCK = {
   films: [
     `Интерстеллар`,

@@ -12,8 +12,6 @@ import {getMostCommentedArr} from "./mocks/card";
 import {createFilmCardTemp} from "./components/card";
 import {filmDetailsTemp} from "./components/filmDetails";
 
-console.log(filmsArray);
-
 const render = (container, elem, place = `beforeend`) => {
   container.insertAdjacentHTML(place, elem);
 };
