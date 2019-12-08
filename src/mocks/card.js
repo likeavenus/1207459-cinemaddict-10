@@ -123,5 +123,5 @@ export const getTopRatedArr = () => {
 };
 
 export const getMostCommentedArr = () => {
-  return filmsArray.filter((film) => film.comments.length > 4 ? film : null);
+  return filmsArray.slice(0, 2);
 };

@@ -68,19 +68,29 @@ showMoreBtn.addEventListener(`click`, showOtherCards);
 const topRatedFilmsListElem = filmsElem.querySelector(`.films-list--extra`);
 const topRatedFilmsContainerElem = topRatedFilmsListElem.querySelector(`.films-list__container`);
 
-const topRatedFilms = getTopRatedArr().map((item)=> createFilmCardTemp(item)).join(`\n`);
+const topRatedFilms = [];
 
-if (!getTopRatedArr().filter((film) => film.rating > 0).length) {
-  topRatedFilmsListElem.style.display = `none`;
-} else {
-  let ratingStatus = 0;
-  getTopRatedArr().map((item)=> {
-    ratingStatus += item.rating;
+if (getTopRatedArr().length) {
+  getTopRatedArr().forEach((item)=> {
+    topRatedFilms.push(createFilmCardTemp(item));
   });
-  if (ratingStatus) {
-    render(topRatedFilmsContainerElem, topRatedFilms);
-  }
+
+  render(topRatedFilmsContainerElem, topRatedFilms.join(`\n`));
+} else {
+  topRatedFilmsListElem.style.display = `none`;
 }
+
+// if (!getTopRatedArr().filter((film) => film.rating > 0).length) {
+//   topRatedFilmsListElem.style.display = `none`;
+// } else {
+//   let ratingStatus = 0;
+//   getTopRatedArr().map((item)=> {
+//     ratingStatus += item.rating;
+//   });
+//   if (ratingStatus) {
+//     render(topRatedFilmsContainerElem, topRatedFilms);
+//   }
+// }
 
 render(mainElem, filmDetailsTemp(filmsArray[0]));
 
@@ -93,7 +103,3 @@ if (mostCommentedFilms.length) {
 } else {
   mostCommentedFilsListElem.parentElement.style.display = `none`;
 }
-
-// new Array(MOST_COMMENTED)
-//   .fill(``)
-//   .forEach(()=> render(mostCommentedFilsListElem, createFilmCardTemp(filmsArr)));
