@@ -7,7 +7,7 @@ import {mostCommentedTemp} from "./components/mostCommented";
 import {filmsArray} from "./mocks/card";
 import {getUsername} from "./mocks/userRank";
 import {getFilterData} from "./mocks/menu";
-import {getTopRatedArr} from "./mocks/card";
+import {topRatedArr} from "./mocks/card";
 import {getMostCommentedArr} from "./mocks/card";
 import {createFilmCardTemp} from "./components/card";
 import {filmDetailsTemp} from "./components/filmDetails";
@@ -68,29 +68,15 @@ showMoreBtn.addEventListener(`click`, showOtherCards);
 const topRatedFilmsListElem = filmsElem.querySelector(`.films-list--extra`);
 const topRatedFilmsContainerElem = topRatedFilmsListElem.querySelector(`.films-list__container`);
 
-const topRatedFilms = [];
 
-if (getTopRatedArr().length) {
-  getTopRatedArr().forEach((item)=> {
-    topRatedFilms.push(createFilmCardTemp(item));
+if (topRatedArr.length) {
+  topRatedArr.forEach((item)=> {
+    render(topRatedFilmsContainerElem, createFilmCardTemp(item));
   });
 
-  render(topRatedFilmsContainerElem, topRatedFilms.join(`\n`));
 } else {
   topRatedFilmsListElem.style.display = `none`;
 }
-
-// if (!getTopRatedArr().filter((film) => film.rating > 0).length) {
-//   topRatedFilmsListElem.style.display = `none`;
-// } else {
-//   let ratingStatus = 0;
-//   getTopRatedArr().map((item)=> {
-//     ratingStatus += item.rating;
-//   });
-//   if (ratingStatus) {
-//     render(topRatedFilmsContainerElem, topRatedFilms);
-//   }
-// }
 
 render(mainElem, filmDetailsTemp(filmsArray[0]));
 

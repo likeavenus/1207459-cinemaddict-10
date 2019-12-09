@@ -118,9 +118,11 @@ export const generateFilmCard = () => {
 const FILMS_COUNT = 22;
 export const filmsArray = new Array(FILMS_COUNT).fill(``).map(() => generateFilmCard());
 
-export const getTopRatedArr = () => {
+const getTopRatedArr = () => {
   return filmsArray.filter((film, index) => index < 2 ? parseFloat(film.rating) > 7.5 : null);
 };
+
+export const topRatedArr = getTopRatedArr();
 
 export const getMostCommentedArr = () => {
   return filmsArray.slice(0, 2);
