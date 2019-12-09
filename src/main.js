@@ -85,7 +85,9 @@ const mostCommentedFilsListElem = topRatedFilmsListElem.nextElementSibling.query
 const mostCommentedFilms = getMostCommentedArr(filmsArray).filter((item, index) => index > 1 ? null : item);
 
 if (mostCommentedFilms.length) {
-  render(mostCommentedFilsListElem, mostCommentedFilms.map((item) => createFilmCardTemp(item)).join(`\n`));
+  mostCommentedFilms.forEach((item) => {
+    render(mostCommentedFilsListElem, createFilmCardTemp(item));
+  });
 } else {
   mostCommentedFilsListElem.parentElement.style.display = `none`;
 }
