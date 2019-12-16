@@ -9,8 +9,9 @@ import {getUsername} from "./mocks/userRank";
 import {getFilterData} from "./mocks/menu";
 import {getTopRatedArr} from "./mocks/card";
 import {getMostCommentedArr} from "./mocks/card";
-import {createFilmCardTemp} from "./components/card";
+// import {createFilmCardTemp} from "./components/card";
 import {filmDetailsTemp} from "./components/filmDetails";
+import {render, RenderPosition} from "./utils";
 
 const render = (container, elem, place = `beforeend`) => {
   container.insertAdjacentHTML(place, elem);
