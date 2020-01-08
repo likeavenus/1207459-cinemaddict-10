@@ -7,11 +7,10 @@ import {mostCommentedTemp} from "./components/mostCommented";
 import {filmsArray} from "./mocks/card";
 import {getUsername} from "./mocks/userRank";
 import {getFilterData} from "./mocks/menu";
-import {getTopRatedArr} from "./mocks/card";
+import {topRatedArr} from "./mocks/card";
 import {getMostCommentedArr} from "./mocks/card";
-// import {createFilmCardTemp} from "./components/card";
+import {createFilmCardTemp} from "./components/card";
 import {filmDetailsTemp} from "./components/filmDetails";
-import {render, RenderPosition} from "./utils";
 
 const render = (container, elem, place = `beforeend`) => {
   container.insertAdjacentHTML(place, elem);
@@ -69,18 +68,14 @@ showMoreBtn.addEventListener(`click`, showOtherCards);
 const topRatedFilmsListElem = filmsElem.querySelector(`.films-list--extra`);
 const topRatedFilmsContainerElem = topRatedFilmsListElem.querySelector(`.films-list__container`);
 
-const topRatedFilms = getTopRatedArr().map((item)=> createFilmCardTemp(item)).join(`\n`);
 
-if (!getTopRatedArr().filter((film) => film.rating > 0).length) {
-  topRatedFilmsListElem.style.display = `none`;
-} else {
-  let ratingStatus = 0;
-  getTopRatedArr().map((item)=> {
-    ratingStatus += item.rating;
+if (topRatedArr.length) {
+  topRatedArr.forEach((item)=> {
+    render(topRatedFilmsContainerElem, createFilmCardTemp(item));
   });
-  if (ratingStatus) {
-    render(topRatedFilmsContainerElem, topRatedFilms);
-  }
+
+} else {
+  topRatedFilmsListElem.style.display = `none`;
 }
 
 render(mainElem, filmDetailsTemp(filmsArray[0]));
@@ -90,11 +85,9 @@ const mostCommentedFilsListElem = topRatedFilmsListElem.nextElementSibling.query
 const mostCommentedFilms = getMostCommentedArr(filmsArray).filter((item, index) => index > 1 ? null : item);
 
 if (mostCommentedFilms.length) {
-  render(mostCommentedFilsListElem, mostCommentedFilms.map((item) => createFilmCardTemp(item)).join(`\n`));
+  mostCommentedFilms.forEach((item) => {
+    render(mostCommentedFilsListElem, createFilmCardTemp(item));
+  });
 } else {
   mostCommentedFilsListElem.parentElement.style.display = `none`;
 }
-
-// new Array(MOST_COMMENTED)
-//   .fill(``)
-//   .forEach(()=> render(mostCommentedFilsListElem, createFilmCardTemp(filmsArr)));
