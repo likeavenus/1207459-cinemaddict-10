@@ -1,7 +1,7 @@
 # Личный проект «Киноман» [![Build status][travis-image]][travis-url]
 
-* Студент: [Гулиев Рафаэль](https://htmlacademy.ru/profile/id1207459).
-* Наставник: [Артем Матковский](https://htmlacademy.ru/profile/id1151767).
+* Студент: [Рафаэль Гулиев](https://up.htmlacademy.ru/ecmascript/10/user/1207459).
+* Наставник: [Артём Матковский](https://htmlacademy.ru/profile/id1151767).
 
 ---
 
@@ -48,5 +48,5 @@ git clone SSH-адрес_вашего_форка
 
 Репозиторий создан для обучения на интенсивном онлайн‑курсе «[Профессиональный JavaScript, уровень 2](https://htmlacademy.ru/intensive/ecmascript)» от [HTML Academy](https://htmlacademy.ru).
 
-[travis-image]: https://travis-ci.com/htmlacademy-ecmascript/855181-cinemaddict-8.svg?branch=master
-[travis-url]: https://travis-ci.com/htmlacademy-ecmascript/855181-cinemaddict-8
+[travis-image]: https://travis-ci.com/htmlacademy-ecmascript/1207459-cinemaddict-10.svg?branch=master
+[travis-url]: https://travis-ci.com/htmlacademy-ecmascript/1207459-cinemaddict-10
