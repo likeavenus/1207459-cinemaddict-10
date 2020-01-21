@@ -1,93 +1,49 @@
-import {createProfileTemp} from "./components/profile";
-import {createHeadTemp} from "./components/head";
-import {createFilmsListTemp} from "./components/filmsList";
-import {createShowMoreTemp} from "./components/showMore";
-import {createTopRatedTemp} from "./components/topRated";
-import {mostCommentedTemp} from "./components/mostCommented";
-import {filmsArray} from "./mocks/card";
-import {getUsername} from "./mocks/userRank";
-import {getFilterData} from "./mocks/menu";
-import {topRatedArr} from "./mocks/card";
-import {getMostCommentedArr} from "./mocks/card";
-import {createFilmCardTemp} from "./components/card";
-import {filmDetailsTemp} from "./components/filmDetails";
+import StatisticsComponent from './components/statistics.js';
+import UserProfileComponent from './components/user-rank.js';
+import FilmSectionComponent from './components/films-section.js';
+import {
+  RenderPosition,
+  render
+} from './utils/render.js';
+import {
+  FilterTypeStatistic
+} from './const.js';
+import PageController from './controllers/page-controller';
+import FilterController from './controllers/filter-controller.js';
+import MoviesModel from './models/movies.js';
 
-const render = (container, elem, place = `beforeend`) => {
-  container.insertAdjacentHTML(place, elem);
-};
-
-const mainElem = document.querySelector(`.main`);
-const headerElem = document.querySelector(`.header`);
-
-render(headerElem, createProfileTemp(getUsername()));
-
-render(mainElem, createHeadTemp(getFilterData(filmsArray).watchlist, getFilterData(filmsArray).favorites, getFilterData(filmsArray).history));
-
-const filmsElem = document.querySelector(`.films`);
-
-render(filmsElem, createFilmsListTemp());
-
-const filmsListElem = document.querySelector(`.films-list`);
-const filmsContainerElem = document.querySelector(`.films-list__container`);
-
-const generatefilms = () => {
-  return filmsArray.map((item) => createFilmCardTemp(item)).join(`\n`);
-};
-render(filmsContainerElem, generatefilms());
-
-render(filmsListElem, createShowMoreTemp());
-
-render(filmsElem, createTopRatedTemp());
-render(filmsElem, mostCommentedTemp());
-
-const footerStatistics = document.querySelector(`.footer__statistics p`);
-footerStatistics.innerHTML = `${filmsArray.length} movies inside`;
-
-const filmCards = document.querySelectorAll(`.film-card`);
-const showMoreBtn = document.querySelector(`.films-list__show-more`);
+import {
+  SortForm
+} from './components/sort-form.js';
+import API from './api.js';
 
 
-let CURRENT_CARDS_COUNT = -1;
-const showOtherCards = () => {
-  CURRENT_CARDS_COUNT += 5;
-  if (CURRENT_CARDS_COUNT >= filmsArray.length - 1) {
-    showMoreBtn.remove();
-  }
-  filmCards.forEach((item, index)=> {
-    if (index > CURRENT_CARDS_COUNT) {
-      item.style.display = `none`;
-    } else {
-      item.style.display = `block`;
-    }
+const END_POINT = `https://htmlacademy-es-10.appspot.com/cinemaddict`;
+const AUTORIZATION = `Basic 2asdfjkgll123sssdkl`;
+
+const api = new API(END_POINT, AUTORIZATION);
+const moviesModel = new MoviesModel();
+const siteHeader = document.querySelector(`.header`);
+const siteMainSection = document.querySelector(`.main`);
+const footerStatistic = document.querySelector(`.footer__statistics p`);
+const sortComponent = new SortForm();
+const filmSectionComponent = new FilmSectionComponent();
+render(siteMainSection, filmSectionComponent.getElement(), RenderPosition.BEFOREEND);
+render(siteMainSection, sortComponent.getElement(), RenderPosition.AFTERBEGIN);
+const filterComponent = new FilterController(siteMainSection, moviesModel);
+
+api.getFilms()
+  .then((films) => {
+    moviesModel.setFilms(films);
+    filterComponent.render();
+    const statisticsComponent = new StatisticsComponent(moviesModel.getFilms(), FilterTypeStatistic.ALL);
+    render(siteHeader, new UserProfileComponent(moviesModel.getAllFilms().length).getElement(), RenderPosition.BEFOREEND);
+    const pageController = new PageController(filmSectionComponent, sortComponent, moviesModel, filterComponent, statisticsComponent, api);
+    render(siteMainSection, statisticsComponent.getElement(), RenderPosition.BEFOREEND);
+    const arrayOfPromises = films.map((film) => api.getComments(film[`id`]).then((comments) => comments));
+    Promise.all(arrayOfPromises).then((comments) => {
+      moviesModel.setComments(comments);
+      pageController.render();
+      footerStatistic.textContent = `${moviesModel.getAllFilms().length} movies inside`;
+    });
   });
-};
-
-showOtherCards();
-showMoreBtn.addEventListener(`click`, showOtherCards);
-
-const topRatedFilmsListElem = filmsElem.querySelector(`.films-list--extra`);
-const topRatedFilmsContainerElem = topRatedFilmsListElem.querySelector(`.films-list__container`);
-
-
-if (topRatedArr.length) {
-  topRatedArr.forEach((item)=> {
-    render(topRatedFilmsContainerElem, createFilmCardTemp(item));
-  });
-
-} else {
-  topRatedFilmsListElem.style.display = `none`;
-}
-
-render(mainElem, filmDetailsTemp(filmsArray[0]));
-
-const mostCommentedFilsListElem = topRatedFilmsListElem.nextElementSibling.querySelector(`.films-list__container`);
-
-const mostCommentedFilms = getMostCommentedArr(filmsArray).filter((item, index) => index > 1 ? null : item);
-
-if (mostCommentedFilms.length) {
-  mostCommentedFilms.forEach((item) => {
-    render(mostCommentedFilsListElem, createFilmCardTemp(item));
-  });
-} else {
-  mostCommentedFilsListElem.parentElement.style.display = `none`;
-}
