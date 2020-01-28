@@ -31,6 +31,8 @@ export default class MovieController {
     this._onCommentDelete = onCommentDelete;
     this._mode = Mode.DEFAULT;
     this._filterController = filterController;
+    this._onEscKeyDown = this.onEscKeydown.bind(this);
+    this._onCtrlEnterKeyup = this.onCtrlEnterKeyup.bind(this);
   }
   render(card) {
     const oldFilmCard = this._filmCard;
@@ -39,54 +41,11 @@ export default class MovieController {
     this._filmCard = new FilmCardComponent(card);
     this._filmCardDetails = new FilmCardDetailsComponent(card);
     const filmCardParts = this._filmCard.getElement().querySelectorAll(`.film-card__poster, .film-card__title, .film-card__comments`);
-    const onEscKeydown = (evt) => {
-      const isEscape = evt.key === `Escape` || evt.key === `Esc`;
-      if (isEscape) {
-        remove(this._filmCardDetails);
-        document.removeEventListener(`keydown`, onEscKeydown);
-        document.removeEventListener(`keyup`, onCtrlEnterKeyup);
-      }
-    };
 
     const onButtonCloseClick = () => {
       remove(this._filmCardDetails);
-      document.removeEventListener(`keyup`, onCtrlEnterKeyup);
-      document.removeEventListener(`keydown`, onEscKeydown);
-    };
-
-    const onCtrlEnterKeyup = (evt) => {
-      const isCombinationPressed = (evt.key === `Enter` && evt.ctrlKey);
-      if (isCombinationPressed) {
-        const emojiSrc = this._filmCardDetails.getElement().querySelector(`.film-details__emoji-item:checked`);
-        const newComment = {
-          id: `${getRandomIntegerFromGap(2700, 2800)}`,
-          author: `You`,
-          comment: this._filmCardDetails.getElement().querySelector(`textarea`).value,
-          date: new Date(),
-          emotion: `${emojiSrc.value}`,
-        };
-
-        if (newComment.text === `` || newComment.emoji === `./`) {
-          return;
-        }
-        const detailedCard = this._filmCardDetails.getCard();
-        const newCard = MovieModel.clone(detailedCard);
-        const newCommentTextarea = this._filmCardDetails.getElement().querySelector(`.film-details__comment-input`);
-        newCommentTextarea.disabled = true;
-        newCard.comments.push(newComment.id);
-        newCard.commentsList = detailedCard.commentsList;
-        newCard.commentsList.push(newComment);
-        this._onCommentsChange(newCard, newComment)
-          .then((response) => {
-            newCard.commentsList = response.comments;
-          });
-        this._onDataChange(this, card, newCard, this.setCommentSendErrorHandler());
-      }
-      const buttonCloseDetails = this._filmCardDetails.getElement().querySelector(`.film-details__close-btn`);
-      document.addEventListener(`keydown`, onEscKeydown);
-      document.addEventListener(`keyup`, onCtrlEnterKeyup);
-      buttonCloseDetails.addEventListener(`click`, onButtonCloseClick);
-      this._filmCardDetails.recoveryListeners();
+      document.removeEventListener(`keydown`, this._onEscKeyDown);
+      document.removeEventListener(`keyup`, this._onCtrlEnterKeyup);
     };
 
     const onFilmInnerClick = () => {
@@ -94,14 +53,18 @@ export default class MovieController {
       this._mode = Mode.DETAILS;
       this._filmCardDetails.getElement().classList.add(`bounce-in-right`);
       render(siteMainSection, this._filmCardDetails.getElement(), RenderPosition.BEFOREEND);
+      this.setPutRatingClickHanlder();
       const buttonCloseDetails = this._filmCardDetails.getElement().querySelector(`.film-details__close-btn`);
-      document.addEventListener(`keydown`, onEscKeydown);
-      document.addEventListener(`keyup`, onCtrlEnterKeyup);
       buttonCloseDetails.addEventListener(`click`, onButtonCloseClick);
       this._filmCardDetails.renderComments();
       this._filmCardDetails.rerenderCommentsBlockTitle();
+      this.setFilmDetailsButtonClick(card);
       this._filmCardDetails.showRatingBlock();
       this.setDeleteCommentClickHandler();
+      document.removeEventListener(`keydown`, this._onEscKeyDown);
+      document.removeEventListener(`keyup`, this._onCtrlEnterKeyup);
+      document.addEventListener(`keydown`, this._onEscKeyDown);
+      document.addEventListener(`keyup`, this._onCtrlEnterKeyup);
     };
     this._filmCard.setFilmInnersClickHandlers(filmCardParts, onFilmInnerClick);
     this._filmCard.setButtonWatchlistClickHandler((evt) => {
@@ -111,6 +74,7 @@ export default class MovieController {
       this._onDataChange(this, card, newCard);
     });
     this._filmCard.setButtonWatchedClickHandler((evt) => {
+
       evt.preventDefault();
       const newCard = MovieModel.clone(card);
       newCard.alreadyWatched = !newCard.alreadyWatched;
@@ -140,10 +104,13 @@ export default class MovieController {
     const buttonCloseDetails = this._filmCardDetails.getElement().querySelector(`.film-details__close-btn`);
     buttonCloseDetails.addEventListener(`click`, onButtonCloseClick);
     this._filmCardDetails.recoveryListeners();
-    this.setPutRatingClickHanlder();
+    this.setFilmDetailsButtonClick(card);
+    this._filmCardDetails.showRatingBlock();
   }
   setDefaultView() {
     if (this._mode !== Mode.DEFAULT) {
+      document.removeEventListener(`keydown`, this._onEscKeyDown);
+      document.removeEventListener(`keyup`, this._onCtrlEnterKeyup);
       remove(this._filmCardDetails);
     }
   }
@@ -162,7 +129,7 @@ export default class MovieController {
         this._filmCardDetails.renderComments();
         this.setDeleteCommentClickHandler();
       });
-      this.setDeleteCommentClickHandler();
+      this._onDataChange(this, card, newCard);
     };
 
     [...this._filmCardDetails.getElement().querySelectorAll(`.film-details__comment-delete`)].forEach((button) => {
@@ -181,10 +148,17 @@ export default class MovieController {
     newCommentBlock.classList.add(`shake`);
   }
   setPutRatingClickHanlder() {
-    const ratingBlock = this._filmCardDetails.getElement().querySelector(`.film-details__user-wrap`);
-    const resetButton = this._filmCardDetails.getElement().querySelector(`.film-details__watched-reset`);
-    const ratingButtons = [...this._filmCardDetails.getElement().querySelectorAll(`.film-details__user-rating-input`)];
     const oldCard = this._filmCardDetails.getCard();
+    const ratingButtons = [...this._filmCardDetails.getElement().querySelectorAll(`.film-details__user-rating-input`)];
+    const onResetButtonClick = () => {
+      ratingButtons.forEach((button) => {
+        button.checked = false;
+      });
+      const newCard = MovieModel.clone(oldCard);
+      newCard.personalRating = 0;
+      this._onDataChange(this, oldCard, newCard);
+    };
+
     const onRatingButtonClick = (evt) => {
       const onRatingSendError = () => {
         const ratingLabels = ratingBlock.querySelectorAll(`.film-details__user-rating-label`);
@@ -200,18 +174,71 @@ export default class MovieController {
       this._onDataChange(this, oldCard, newCard, onRatingSendError);
     };
 
+    const ratingBlock = this._filmCardDetails.getElement().querySelector(`.film-details__user-wrap`);
+    const resetButton = this._filmCardDetails.getElement().querySelector(`.film-details__watched-reset`);
+
     ratingButtons.forEach((button) => {
       button.addEventListener(`click`, onRatingButtonClick);
     });
-
-    const onResetButtonClick = () => {
-      ratingButtons.forEach((button) => {
-        button.checked = false;
-      });
-      const newCard = MovieModel.clone(oldCard);
-      newCard.personalRating = 0;
-      this._onDataChange(this, oldCard, newCard);
-    };
     resetButton.addEventListener(`click`, onResetButtonClick);
+  }
+
+  setFilmDetailsButtonClick(card) {
+    this._filmCardDetails.getElement().querySelector(`.film-details__control-label--watchlist`).addEventListener(`click`, () => {
+      const newCard = MovieModel.clone(card);
+      newCard.watchList = !newCard.watchList;
+      this._onDataChange(this, card, newCard);
+    });
+    this._filmCardDetails.getElement().querySelector(`.film-details__control-label--watched`).addEventListener(`click`, () => {
+      const newCard = MovieModel.clone(card);
+      newCard.alreadyWatched = !newCard.alreadyWatched;
+      newCard.personalRating = 0;
+      this._onDataChange(this, card, newCard);
+    });
+    this._filmCardDetails.getElement().querySelector(`.film-details__control-label--favorite`).addEventListener(`click`, () => {
+      const newCard = MovieModel.clone(card);
+      newCard.favorite = !newCard.favorite;
+      this._onDataChange(this, card, newCard);
+    });
+  }
+  onEscKeydown(evt) {
+    const isEscape = evt.key === `Escape` || evt.key === `Esc`;
+    if (isEscape) {
+      remove(this._filmCardDetails);
+      document.removeEventListener(`keydown`, this._onEscKeyDown);
+      document.removeEventListener(`keyup`, this._onCtrlEnterKeyup);
+    }
+  }
+  onCtrlEnterKeyup(evt) {
+    const isCombinationPressed = (evt.key === `Enter` && evt.ctrlKey);
+    if (isCombinationPressed) {
+      const emojiSrc = this._filmCardDetails.getElement().querySelector(`.film-details__emoji-item:checked`);
+      const newComment = {
+        id: `${getRandomIntegerFromGap(2700, 2800)}`,
+        author: `You`,
+        comment: this._filmCardDetails.getElement().querySelector(`textarea`).value,
+        date: new Date(),
+        emotion: `${emojiSrc.value}`,
+      };
+
+      if (newComment.text === `` || newComment.emoji === `./`) {
+        return;
+      }
+      const detailedCard = this._filmCardDetails.getCard();
+      const newCard = MovieModel.clone(detailedCard);
+      const newCommentTextarea = this._filmCardDetails.getElement().querySelector(`.film-details__comment-input`);
+      newCard.comments.push(newComment.id);
+      newCard.commentsList = detailedCard.commentsList;
+      newCard.commentsList.push(newComment);
+      newCommentTextarea.disabled = true;
+      this._onCommentsChange(newCard, newComment, this.setCommentSendErrorHandler.bind(this))
+        .then((response) => {
+          newCard.commentsList = response.comments;
+        });
+      this._onDataChange(this, detailedCard, newCard, this.setCommentSendErrorHandler.bind(this));
+    }
+    const buttonCloseDetails = this._filmCardDetails.getElement().querySelector(`.film-details__close-btn`);
+    buttonCloseDetails.addEventListener(`click`, this.testClick);
+    this._filmCardDetails.recoveryListeners();
   }
 }
