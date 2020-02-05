@@ -163,7 +163,7 @@ export default class PageController {
         break;
     }
     remove(this._showMoreButton);
-    startAmountCards = 5;
+    startAmountCards = PRIMARY_CARDS_AMOUNT;
     filmListContainer.innerHTML = ``;
     this._renderShowMoreButton(sortedCards);
     const sortedFilms = renderCards(filmListContainer, sortedCards.slice(0, startAmountCards), this._onDataChange, this._onViewChange, this._filterController, this._moviesModel, this._onCommentsChange, this._onCommentDelete);
